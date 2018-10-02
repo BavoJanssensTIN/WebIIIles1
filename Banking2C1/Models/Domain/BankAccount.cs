@@ -8,7 +8,7 @@ namespace Banking2C1.Models.Domain
     public class BankAccount
     {
         #region Fields
-        public const decimal WithdrawCost = 0.10M;
+        //public const decimal WithdrawCost = 0.10M;
         private decimal _balance;
         //IList is iterable, kan overlopen worden met forEach
         //INumberable zou niet voldoende zijn, daar kan ik niets aan toevoegen
@@ -45,15 +45,16 @@ namespace Banking2C1.Models.Domain
         #endregion
 
         #region Constructors
-        public BankAccount(string accountNumber)
+        public BankAccount(string accountNumber) : this(accountNumber, 0)
         {
-            AccountNumber = accountNumber;
-            _transactions = new List<Transaction>();
+            
         }
 
-        public BankAccount(string accountNumber, decimal balance) : this(accountNumber)
+        public BankAccount(string accountNumber, decimal balance)
         {
+            AccountNumber = accountNumber;
             Balance = balance;
+            _transactions = new List<Transaction>();
         }
         #endregion
 
@@ -64,11 +65,32 @@ namespace Banking2C1.Models.Domain
             _transactions.Add(new Transaction(amount, TransactionType.Deposit));
         }
 
-        public void Withdraw(decimal amount)
+        //virtual zorgt ervoor dat deze methode overschreven kan worden in subklassen
+        public virtual void Withdraw(decimal amount)
         {
-            Balance -= amount + WithdrawCost;
+            Balance -= amount;
             _transactions.Add(new Transaction(amount, TransactionType.Withdraw));
-        } 
+        }
+
+        public override string ToString()
+        {
+            return $"Account number: {AccountNumber} --- Balance: {Balance}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            //casting als het niet lukt geeft het null, geen exception
+            BankAccount ba = obj as BankAccount;
+            if (ba == null) return false;
+            return ba.AccountNumber == this.AccountNumber;
+        }
+
+        //GetHashCode() steeds overriden als je Equals override
+        public override int GetHashCode()
+        {
+            //gewoon doorspelen naar AccountNumber
+            return AccountNumber.GetHashCode();
+        }
         #endregion
 
 
