@@ -20,6 +20,11 @@ namespace Banking2C1
             Console.WriteLine($"Balance is currently {myBA.Balance} Euro");
             myBA.Withdraw(20);
             Console.WriteLine($"Balance is currently {myBA.Balance} Euro");
+            Console.WriteLine($"myBA has {myBA.NrOfTransactions} transactions:");
+            foreach(var t in myBA.Transactions)
+            {
+                Console.WriteLine($"{t.Amount} - {t.DateOfTransaction} - {t.TransactionType}");
+            }
             Console.ReadLine();
         }
     }
